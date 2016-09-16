@@ -84,6 +84,7 @@ void setup() {
  
  pinMode(10, OUTPUT);
  pinMode(led, OUTPUT);
+ pinMode(ledManual, OUTPUT);
  pinMode(botao,INPUT);
  //pinMode(ir, INPUT);
  
@@ -147,10 +148,10 @@ void loop() {
 //QUALQUER VALOR FORA DA CURVA DE CORRELAÇÃO ENTRE IR E LDR, ESTABELECIDA NA REG. LINEAR
 //EH CONSIDERADO UMA FONTE DE INFRAVERMELHO
 
-  if (ldr<800){
-    
+  if (ldr<750){
+      digitalWrite(ledManual, LOW);  
       if (average>=(120+ldr/4) || digitalRead(botao)==LOW){
-       
+          digitalWrite(ledManual, LOW);       
         //  Serial.println("CAMERA DETECTADA");
           digitalWrite(led, HIGH);
           File dataFile = SD.open("gps_log.txt", FILE_WRITE);
@@ -172,13 +173,43 @@ void loop() {
             Serial.println("error opening datalog.txt");
           }
     
-      }
-  }
-  
-  else { 
+   }
+
+   else { 
 
       digitalWrite(ledManual, HIGH);
       
+      if (digitalRead(botao)==LOW){
+       
+        //  Serial.println("CAMERA DETECTADA");
+          digitalWrite(led, HIGH);
+          File dataFile = SD.open("gps_log.txt", FILE_WRITE);
+          
+          if(dataFile) {
+              while(mySerial.available()) {
+                // pos = char(mySerial.read());
+                pos = mySerial.read();
+                dataString += String(pos);
+                index++;
+                if (index>200)
+                  break;
+              }
+            dataFile.print(dataString);
+            dataFile.close();
+          }
+       
+          else {
+            Serial.println("error opening datalog.txt");
+          }
+    
+   }
+ }
+
+}
+// acionamento por botao no caso de alta luminância
+  else { 
+      digitalWrite(ledManual, HIGH);
+            
       if (digitalRead(botao)==LOW){
        
         //  Serial.println("CAMERA DETECTADA");

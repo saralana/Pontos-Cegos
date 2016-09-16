@@ -3,7 +3,7 @@ Assembly variant: ''
 
 Qty Value            Device           Parts                                                 
 	OK	1   2.2uF~4.7uF      C-EUC0805        C9                                                    
-3   22uF             C-EUC1210        C1, C2, C7                                            
+3   Opcionais 10~22uF X7R 25V             C-EUC1210        C1, C2, C7                                            
 	OK	1                    CPOL-EUD         C6                                                    
 	OK	5   100nF X7R        C-EUC0603        C3, C4, C10, CRST, C8                                     
 
@@ -16,7 +16,7 @@ Qty Value            Device           Parts
 1   16MHz            RESONATOR16MHZ   Y1                                                    
 
  
-	1   7805DT           7805DT           IC1                                                   
+	OK	1   7805DT           7805DT           IC1                                                   
 1   ATMEGA328P       ATMEGA328_SMT TQFP   U1                                                    
 
 1   kk 2 vias    22-05-7028-02    kk 2 vias 2.54mm                                                                  

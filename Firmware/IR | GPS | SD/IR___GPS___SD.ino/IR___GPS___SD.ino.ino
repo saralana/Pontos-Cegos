@@ -39,18 +39,26 @@
 #include <SoftwareSerial.h>
 
 // PINOS DE COM. COM GPS
-SoftwareSerial mySerial(3,2); // RX, TX
+//***SoftwareSerial mySerial(3,2); // RX, TX
+SoftwareSerial mySerial(2,3); // RX, TX
 
 // PINO DE COM. COM SD
-const int chipSelect = 4;
+// *** const int chipSelect = 4;
+const int chipSelect = 10;
 
 // BOTAO MODO MANUAL
-const int botao = 7;
+//const int botao = 7;
+const int botao = 6;
 
 // SENSOR DE LUZ VISIVEL
-int ldr = 0;
-int led_luz = 0;
-int ledManual = 9;
+//***int ldr = 0;
+int ldr = A5;
+
+//***int led_luz = 0;
+int led_luz = 5;
+
+//***int ledManual = 9;
+int ledManual = 4;
 
 //LEITURA IR E MEDIA
 //int ir = A5;
@@ -59,8 +67,10 @@ int readings[numReadings];      // the readings from the analog input
 int readIndex = 0;              // the index of the current reading
 int total = 0;                  // the running total
 int average = 0;                // the average
-int led = 8;
-int inputPin = A0;
+//***int led = 8;
+int led = 5;
+//***int inputPin = A0;
+int inputPin = A4;
 
 // LDR
 int ldrPin = A5;

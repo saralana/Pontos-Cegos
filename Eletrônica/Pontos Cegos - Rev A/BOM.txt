@@ -1,0 +1,35 @@
+
+Assembly variant: ''
+
+Qty Value            Device           Parts                                                 
+1   2.2uF~4.7uF      C-EUC0805        C9                                                    
+3   22uF             C-EUC1210        C1, C2, C7                                            
+1                    CPOL-EUD         C6                                                    
+5   100nF X7R        C-EUC0603        C3, C4, C10, CRST, C8                                     
+
+
+
+1                    DIODESMA         D1                                                    
+1                    LED5MM           LED1                                                  
+
+
+1   16MHz            RESONATOR16MHZ   Y1                                                    
+
+ 
+1   7805DT           7805DT           IC1                                                   
+1   ATMEGA328P       ATMEGA328_SMT TQFP   U1                                                    
+
+1   kk 2 vias    22-05-7028-02    J1                                                                                        
+2   2510-            2510-            X1, X2 
+1   FTDI_HEADERSMD   FTDI_HEADERSMD   U$4                                                   
+1   NEO6M_BREAKOUT   NEO6M_BREAKOUT   U$3                                                   
+1   SD_BREAKOUT      SD_BREAKOUT      U$2          
+
+
+
+1                    R-EU_R0603       FB 
+
+8   1M               R-EU_R0603       RLDR1, RLDR2, RLDR3, RLDR4, RLDR5, RLDR6, RLDR7, RLDR8
+2   4k7              R-EU_R0603       RBUT1, RLED3                                          
+2   10k              R-EU_R0603       RBUT2, RRST   
+2   150R             R-EU_R0603       RLED1, RLED2   

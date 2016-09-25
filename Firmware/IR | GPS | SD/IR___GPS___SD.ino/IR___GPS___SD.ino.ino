@@ -108,9 +108,9 @@ void setup() {
 
 void loop() {
   //delay(500);
-  char index = 0;
-  char pos = 0;
-  String dataString = "";
+//  char index = 0;
+//  char pos = 0;
+//  String dataString = "";
   digitalWrite(led, LOW);
   ldr = analogRead(ldrPin);
 
@@ -163,68 +163,33 @@ void loop() {
   if (ldr<750){
       digitalWrite(ledManual, LOW);  
       if (average>=(120+ldr/4) || digitalRead(botao)==LOW){
-          digitalWrite(ledManual, LOW);       
-        //  Serial.println("CAMERA DETECTADA");
-          digitalWrite(led, HIGH);
-          File dataFile = SD.open("gps_log.txt", FILE_WRITE);
-          
-          if(dataFile) {
-                while(mySerial.available()) {
-                  // pos = char(mySerial.read());
-                  pos = mySerial.read();
-                  dataString += String(pos);
-                  index++;
-                  if (index>200)
-                    break;
-                }
-            dataFile.print(dataString);
-            dataFile.close();
-          }
-           
-          else {
-            Serial.println("error opening datalog.txt");
-          }
-    
-   }
-
-   else { 
-
-      digitalWrite(ledManual, HIGH);
-      
-      if (digitalRead(botao)==LOW){
-       
-        //  Serial.println("CAMERA DETECTADA");
-          digitalWrite(led, HIGH);
-          File dataFile = SD.open("gps_log.txt", FILE_WRITE);
-          
-          if(dataFile) {
-              while(mySerial.available()) {
-                // pos = char(mySerial.read());
-                pos = mySerial.read();
-                dataString += String(pos);
-                index++;
-                if (index>200)
-                  break;
-              }
-            dataFile.print(dataString);
-            dataFile.close();
-          }
-       
-          else {
-            Serial.println("error opening datalog.txt");
-          }
-    
-   }
- }
-
-}
+        digitalWrite(ledManual, LOW);       
+        cameraDetectada();    
+      }
+      else { 
+        digitalWrite(ledManual, HIGH);
+        if (digitalRead(botao)==LOW){     
+          cameraDetectada();
+        }
+      }
+  }
 // acionamento por botao no caso de alta luminância
   else { 
-      digitalWrite(ledManual, HIGH);
-            
+      digitalWrite(ledManual, HIGH);      
       if (digitalRead(botao)==LOW){
-       
-        //  Serial.println("CAMERA DETECTADA");
+        cameraDetectada();
+      }
+  }
+  
+}
+
+
+void cameraDetectada(){
+          //  Serial.println("CAMERA DETECTADA");
+         char index = 0;
+         char pos = 0;
+         String dataString = "";
+
           digitalWrite(led, HIGH);
           File dataFile = SD.open("gps_log.txt", FILE_WRITE);
           
@@ -244,8 +209,5 @@ void loop() {
           else {
             Serial.println("error opening datalog.txt");
           }
-    
-      }
-   }
-  
 }
+

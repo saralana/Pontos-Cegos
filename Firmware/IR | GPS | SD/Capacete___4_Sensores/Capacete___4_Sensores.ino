@@ -11,7 +11,7 @@
    MÓDULO GPS E ARMAZENADAS EM UM ARQUIVO GPS.TXT, GRAVADO NO CARTÃO SD.
 
    POSTERIORMENTE ESSE ARQUIVO É ENVIADO PARA UM REPOSITÓRIO E AS CÂMERAS SÃO VISTAS EM 
-   UM MAPA HOSPEDADO NO OPENSTREETMAPS
+   UM MAPA HOSPEDADO NO UMAP (OPENSTREETMAPS)
 
    A DETECÇÃO PODE SER FEITA NO MODO AUTOMATICO OU MANUAL
 
@@ -21,7 +21,7 @@
 
            Luzes quentes, emissoras de radiação no espectro visível, 
         também emitem radiação IR, na mesma banda de radiação IR de câmeras 
-        de visão noturna.
+        de visão noturna. (880 a 940 nm)
            Assim um receptor IR detecta não só aparelhos de visão noturna, como 
         também luzes quentes.
            Para contornar esse problema e filtrar a detecção apenas para 
@@ -41,59 +41,59 @@
 #include <SoftwareSerial.h>
 
 // PINOS DE COM. COM GPS
-//***SoftwareSerial mySerial(3,2); // RX, TX
 SoftwareSerial mySerial(2,3); // RX, TX
 
 // PINO DE COM. COM SD
-// *** const int chipSelect = 4;
 const int chipSelect = 10;
 
-// BOTAO MODO MANUAL
-//const int botao = 7;
+// PINO BOTAO MODO MANUAL
 const int botao = 6;
 
-// SENSOR DE LUZ VISIVEL
-//***int ldr = 0;
-int ldr = A5;
+//PINO LED INDICATIVO DE CAMERA
+int led_camera = 5;
 
-//***int led_luz = 0;
-int led_luz = 5;
+//PINO LED INDICATIVO MODO MANUAL (VERMELHO)
+int led_manual = 4;
 
-//***int ledManual = 9;
-int ledManual = 4;
-
-//LEITURA IR E MEDIA
-//int ir = A5;
-
-//***int led = 8;
-int led = 5;
-//***int inputPin = A0;
-int ir;
+// VARIAVEIS PARA ARMAZENAMENTO DE IR E LDR
 int ir1, ir2, ir3, ir4;
 int ldr1, ldr2, ldr3, ldr4;
-int irPin = A4;
 
-// LDR
-int ldrPin = A5;
+//PINOS DE IR
+int pin_ir1 = A3;
+int pin_ir2 = A1;
+int pin_ir3 = A7;
+int pin_ir4 = A4;
+
+//PINOS DE LDR
+int pin_ldr1 = A2;
+int pin_ldr2 = A0;
+int pin_ldr3 = A6;
+int pin_ldr4 = A5;
 
 //REGRESSAO LINEAR | IR | LDR
-
 double reg = 0;
 
 
 void setup() {
 
- Serial.begin(9600);
-  // Serial.println("VAI FUNFAR"); // testando comunicacao com arduino
+  Serial.begin(9600);
   // set the data rate for the SoftwareSerial port
   mySerial.begin(9600); // reset SoftwareSerial baudrate
   mySerial.flush();
- 
- pinMode(10, OUTPUT);
- pinMode(led, OUTPUT);
- pinMode(ledManual, OUTPUT);
- pinMode(botao,INPUT);
- //pinMode(ir, INPUT);
+   
+   pinMode(chipSelect, OUTPUT);
+   pinMode(led_camera, OUTPUT);
+   pinMode(led_manual, OUTPUT);
+   pinMode(botao,INPUT);
+   pinMode(pin_ir1, INPUT);
+   pinMode(pin_ir2, INPUT);
+   pinMode(pin_ir3, INPUT);
+   pinMode(pin_ir4, INPUT);
+   pinMode(pin_ldr1, INPUT);
+   pinMode(pin_ldr2, INPUT);
+   pinMode(pin_ldr3, INPUT);
+   pinMode(pin_ldr4, INPUT);
  
    if (!SD.begin(chipSelect)) {
     return;
@@ -102,44 +102,46 @@ void setup() {
 }
 
 void loop() {
-  //delay(500);
-//  char index = 0;
-//  char pos = 0;
-//  String dataString = "";
-  digitalWrite(led, LOW);
-  ldr = analogRead(ldrPin);
-  ldr=1023-ldr;
-  ir1 = mediaIR(irPin);
 
+  digitalWrite(led_camera, LOW);
+
+  //sensores G1
+    ldr1 = 1023 - analogRead(pin_ldr1);
+    ir1 = mediaIR(pin_ir1);
+  //sensores G2
+    ldr2 = 1023 - analogRead(pin_ldr2);
+    ir2 = mediaIR(pin_ir2);
+  //sensores G2
+    ldr3 = 1023 - analogRead(pin_ldr3);
+    ir3 = mediaIR(pin_ir3);
+  //sensores G2
+    ldr4 = 1023 - analogRead(pin_ldr4);
+    ir4 = mediaIR(pin_ir4);
   
   Serial.print("IR");
   Serial.print(ir1);
   Serial.print(" "); 
   Serial.print("LDR");
-  Serial.println(ldr);
+  Serial.println(ldr1);
 
-  // ldr=6*ldr/1000;
-  // reg = (163*ln(average)) -804 -ldr;
-  // reg = abs(146*exp(ldr) - average);
+  detect(ir1, ldr1);
+  detect(ir2, ldr2);
+  detect(ir3, ldr3);
+  detect(ir4, ldr4);
   
-  // REGRESSAO LINEAR PARA ESTABELECER VALORES DE CORRELAÇÃO ENTRE IR E LDR
-  // IR>=120+LDR/4
-   
-  //reg = abs(average-75-(4*ldr));
-   //Serial.println(reg);
+}
+
+
+void detect(int ir, int ldr){
   
-
-//QUALQUER VALOR FORA DA CURVA DE CORRELAÇÃO ENTRE IR E LDR, ESTABELECIDA NA REG. LINEAR
-//EH CONSIDERADO UMA FONTE DE INFRAVERMELHO
-
-  if (ldr<750){
-      digitalWrite(ledManual, LOW);  
-      if (ir1>=(120+ldr/4) || digitalRead(botao)==LOW){
-        digitalWrite(ledManual, LOW);       
+    if (ldr<750){
+      digitalWrite(led_manual, LOW);  
+      if (ir>=(120+ldr/4) || digitalRead(botao)==LOW){
+        digitalWrite(led_manual, LOW);       
         cameraDetectada();    
       }
       else { 
-        digitalWrite(ledManual, HIGH);
+        digitalWrite(led_manual, HIGH);
         if (digitalRead(botao)==LOW){     
           cameraDetectada();
         }
@@ -147,14 +149,14 @@ void loop() {
   }
 // acionamento por botao no caso de alta luminância
   else { 
-      digitalWrite(ledManual, HIGH);      
+      digitalWrite(led_manual, HIGH);      
       if (digitalRead(botao)==LOW){
         cameraDetectada();
       }
   }
-  
-}
 
+  return;
+}
 
 void cameraDetectada(){
           //  Serial.println("CAMERA DETECTADA");
@@ -162,7 +164,7 @@ void cameraDetectada(){
          char pos = 0;
          String dataString = "";
 
-          digitalWrite(led, HIGH);
+          digitalWrite(led_camera, HIGH);
           File dataFile = SD.open("gps_log.txt", FILE_WRITE);
           
           if(dataFile) {

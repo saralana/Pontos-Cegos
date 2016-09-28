@@ -157,19 +157,28 @@ void loop() {
   Serial.println(ldr4);
   Serial.print(" "); 
 */
+
+//DETECCAO AUTOMATICA
   detect(ir1, ldr1);
   detect(ir2, ldr2);
   detect(ir3, ldr3);
   detect(ir4, ldr4);
 
+
+//DETECCAO POR BOTAO
   if (digitalRead(botao)==LOW){
       cameraDetectada();
   }
-  
+
+// MODO MANUAL NO CASO DE ALTA LUMINANCIA
+  if ((ldr1>800)||(ldr2>800)||(ldr3>800)||(ldr4>800))
+        digitalWrite(led_manual, HIGH); 
+  else
+        digitalWrite(led_manual, LOW);       
 }
 
 void detect(int ir, int ldr){
-  
+/*  
     if (ldr<750){
       digitalWrite(led_manual, LOW);  
       if (ir>=(120+ldr/4))      
@@ -177,10 +186,12 @@ void detect(int ir, int ldr){
       else
         digitalWrite(led_manual, HIGH);    
    }
-// acionamento por botao no caso de alta luminância
+   // acionamento por botao no caso de alta luminância
    else 
-      digitalWrite(led_manual, HIGH);      
-      
+      digitalWrite(led_manual, HIGH);     
+*/
+  if (ir>ldr+200)
+      cameraDetectada();       
   return;
 }
 

@@ -49,7 +49,7 @@ const int chipSelect = 10;
 // PINO BOTAO MODO MANUAL
 const int botao = 6;
 
-//PINO LED INDICATIVO DE CAMERA
+//PINO LED INDICATIVO DE CAMERA DETECTADA
 int led_camera = 5;
 
 //PINO LED INDICATIVO MODO MANUAL (VERMELHO)
@@ -103,63 +103,90 @@ void setup() {
 
 void loop() {
 
+  delay(10);
+  
   digitalWrite(led_camera, LOW);
-
+  
+  //LEITURAS
   //sensores G1
     ldr1 = 1023 - analogRead(pin_ldr1);
-    ir1 = mediaIR(pin_ir1);
+    ir1 = 1023 - analogRead(pin_ir1);
   //sensores G2
     ldr2 = 1023 - analogRead(pin_ldr2);
-    ir2 = mediaIR(pin_ir2);
+    ir2 = 1023 - analogRead(pin_ir2);
   //sensores G2
     ldr3 = 1023 - analogRead(pin_ldr3);
-    ir3 = mediaIR(pin_ir3);
+    ir3 = 1023 - analogRead(pin_ir3);
   //sensores G2
     ldr4 = 1023 - analogRead(pin_ldr4);
-    ir4 = mediaIR(pin_ir4);
-  
-  Serial.print("IR");
+    ir4 =  1023 - analogRead(pin_ir4);
+
+  Serial.print("IR1");
+  Serial.print(" ");
   Serial.print(ir1);
   Serial.print(" "); 
-  Serial.print("LDR");
-  Serial.println(ldr1);
+  Serial.print("LDR1");
+  Serial.print(" ");
+  Serial.print(ldr1);
+  Serial.print("    "); 
 
+  Serial.print("IR2");
+  Serial.print(" ");
+  Serial.print(ir2);
+  Serial.print(" "); 
+  Serial.print("LDR2");
+  Serial.print(" ");
+  Serial.println(ldr2);
+/*  Serial.println("      "); 
+
+  Serial.print("IR3");
+  Serial.print(" ");
+  Serial.print(ir3);
+  Serial.print(" "); 
+  Serial.print("LD3");
+  Serial.print(" ");
+  Serial.print(ldr3);
+  Serial.print("      "); 
+    
+  Serial.print("IR4");
+  Serial.print(" ");
+  Serial.print(ir4);
+  Serial.print(" "); 
+  Serial.print("LDR4");
+  Serial.print(" ");
+  Serial.println(ldr4);
+  Serial.print(" "); 
+*/
   detect(ir1, ldr1);
   detect(ir2, ldr2);
   detect(ir3, ldr3);
   detect(ir4, ldr4);
+
+  if (digitalRead(botao)==LOW){
+      cameraDetectada();
+  }
   
 }
-
 
 void detect(int ir, int ldr){
   
     if (ldr<750){
       digitalWrite(led_manual, LOW);  
-      if (ir>=(120+ldr/4) || digitalRead(botao)==LOW){
-        digitalWrite(led_manual, LOW);       
+      if (ir>=(120+ldr/4))      
         cameraDetectada();    
-      }
-      else { 
-        digitalWrite(led_manual, HIGH);
-        if (digitalRead(botao)==LOW){     
-          cameraDetectada();
-        }
-      }
-  }
+      else
+        digitalWrite(led_manual, HIGH);    
+   }
 // acionamento por botao no caso de alta luminância
-  else { 
+   else 
       digitalWrite(led_manual, HIGH);      
-      if (digitalRead(botao)==LOW){
-        cameraDetectada();
-      }
-  }
-
+      
   return;
 }
 
 void cameraDetectada(){
-          //  Serial.println("CAMERA DETECTADA");
+         
+         //  Serial.println("CAMERA DETECTADA");
          char index = 0;
          char pos = 0;
          String dataString = "";
@@ -181,45 +208,8 @@ void cameraDetectada(){
           }
        
           else {
-            Serial.println("error opening datalog.txt");
+           // Serial.println("error opening datalog.txt");
           }
 }
 
-
-int mediaIR(int ir){
-        
-          const int numReadings = 10;
-          int readings[numReadings];      // the readings from the analog input
-          int readIndex = 0;              // the index of the current reading
-          int total = 0;                  // the running total
-          int average = 0;                // the average
-         
-          for (int thisReading = 0; thisReading < numReadings; thisReading++) {
-            readings[thisReading] = 0;
-          }
-        // MEDIA DE 10 LEITURAS DO IR
-        // ------------------------------------------------------- \\
-      
-        // subtract the last reading:
-        total = total - readings[readIndex];
-        // read from the sensor:
-        readings[readIndex] = analogRead(ir);
-        // add the reading to the total:
-        total = total + readings[readIndex];
-        // advance to the next position in the array:
-        readIndex = readIndex + 1;
-        // if we're at the end of the array...
-            if (readIndex >= numReadings) {
-              // ...wrap around to the beginning:
-              readIndex = 0;
-            }
-        // calculate the average:
-        average = total / numReadings;
-        // send it to the computer as ASCII digits
-        //average = map(average,0,950,0,1023);
-        average=1023-average;
-        delay(1);        // delay in between reads for stability
-        return average;
-
-}
 

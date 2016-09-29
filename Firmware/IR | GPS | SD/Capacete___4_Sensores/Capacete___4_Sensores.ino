@@ -16,7 +16,7 @@
    A DETECÇÃO PODE SER FEITA NO MODO AUTOMATICO OU MANUAL
 
    >> MODO AUTOMATICO:
-      - LDR
+      - LDRM
       - Receptor de infravermelho
 
            Luzes quentes, emissoras de radiação no espectro visível, 
@@ -136,8 +136,9 @@ void loop() {
   Serial.print(" "); 
   Serial.print("LDR2");
   Serial.print(" ");
-  Serial.println(ldr2);
-/*  Serial.println("      "); 
+  Serial.print(ldr2);
+  //Serial.println(ldr2);
+  Serial.print("      "); 
 
   Serial.print("IR3");
   Serial.print(" ");
@@ -156,7 +157,7 @@ void loop() {
   Serial.print(" ");
   Serial.println(ldr4);
   Serial.print(" "); 
-*/
+
 
 //DETECCAO AUTOMATICA
   detect(ir1, ldr1);
@@ -171,27 +172,15 @@ void loop() {
   }
 
 // MODO MANUAL NO CASO DE ALTA LUMINANCIA
-  if ((ldr1>800)||(ldr2>800)||(ldr3>800)||(ldr4>800))
+  if ((ldr1>600)||(ldr2>600)||(ldr3>600)||(ldr4>600))
         digitalWrite(led_manual, HIGH); 
   else
         digitalWrite(led_manual, LOW);       
 }
 
-void detect(int ir, int ldr){
-/*  
-    if (ldr<750){
-      digitalWrite(led_manual, LOW);  
-      if (ir>=(120+ldr/4))      
-        cameraDetectada();    
-      else
-        digitalWrite(led_manual, HIGH);    
-   }
-   // acionamento por botao no caso de alta luminância
-   else 
-      digitalWrite(led_manual, HIGH);     
-*/
-  if (ir>ldr+200)
-      cameraDetectada();       
+void detect(int ir, int ldr){ 
+  if(ldr<600 && ir>700)
+        cameraDetectada();       
   return;
 }
 

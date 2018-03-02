@@ -1,0 +1,23 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28520\viewh16580\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0  if (digitalRead(botonCON)==LOW)\{\
+           \
+           // Se prende el LED\
+           digitalWrite(LED, HIGH);  \
+           // configuraciones importantes para crear un archivo de texto\
+           char index = 0;\
+           char pos = 0;\
+           String dataString = "";\
+\
+            // enviando comandos para registro\
+            File dataFile = SD.open("concam.txt", FILE_WRITE); //SD.open para crear o abrir el archivo           \
+            dataFile.print("IR ");\
+            dataFile.print(IR1);\
+            dataFile.print("   LDR ");\
+            dataFile.println(LDR1);\
+            dataFile.close(); //close para cerrar el archivo   \
+    \}}
